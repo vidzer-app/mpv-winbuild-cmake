@@ -6,13 +6,10 @@ ExternalProject_Add(mpv
         lcms2
         libarchive
         libass
-        libdvdnav
-        libdvdread
         libiconv
         libjpeg
         libpng
         luajit
-        rubberband
         uchardet
         openal-soft
         mujs
@@ -40,6 +37,7 @@ ExternalProject_Add(mpv
         -Doptimization=3
         -Db_lto=true
         ${mpv_lto_mode}
+        -Dgpl=false
         -Dlibmpv=true
         -Dpdf-build=enabled
         -Dlua=enabled
@@ -47,9 +45,9 @@ ExternalProject_Add(mpv
         -Dsdl2-gamepad=enabled
         -Dlibarchive=enabled
         -Dlibbluray=enabled
-        -Ddvdnav=enabled
+        -Ddvdnav=disabled
         -Duchardet=enabled
-        -Drubberband=enabled
+        -Drubberband=disabled
         -Dlcms2=enabled
         -Dopenal=enabled
         -Dspirv-cross=enabled
