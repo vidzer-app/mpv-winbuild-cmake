@@ -4,6 +4,7 @@ This fork of [shinchiro/mpv-winbuild-cmake](https://github.com/shinchiro/mpv-win
 
 - `packages/ffmpeg.cmake`: no `--enable-gpl`; the GPL external libraries (avisynth, libdvdnav, libdvdread, librubberband, libx264, libx265, davs2) are dropped. `--enable-version3` stays because OpenSSL 3 (Apache-2.0) is only compatible with LGPL v3, so FFmpeg in this build is **LGPL v3**.
 - `packages/mpv.cmake` / `packages/mpv-release.cmake`: `-Dgpl=false`, `dvdnav` and `rubberband` disabled (Rubber Band Library is GPL-2 even though mpv does not gate it).
+- `packages/libarchive.cmake`: LZO support off (LZO is GPL-2).
 - `.github/workflows`: only the x86_64 clang toolchain and build; releases are tagged `lgpl-YYYYMMDD` and contain `mpv-dev-x86_64-*.7z` (libmpv + headers), `mpv-x86_64-*.7z` (player, for verification) and `ffmpeg-x86_64-*.7z`.
 
 The sources of every library are fetched by the build scripts from their upstream repositories; the exact revisions are in the build logs attached to each workflow run. Verify a build with `mpv --version`: the FFmpeg configuration must not contain `--enable-gpl`, and the mpv feature list must not contain `gpl`.
