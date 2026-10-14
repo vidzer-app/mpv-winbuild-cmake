@@ -14,6 +14,9 @@ ExternalProject_Add(curl
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--filter=tree:0"
     GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !tests !docs"
+    # curl 978cce1 (2026-10-02) calls ASN1_STRING_get_length, which the pinned OpenSSL snapshot lacks.
+    GIT_REMOTE_NAME origin
+    GIT_RESET 318bd978ea2d36ace36b42da2174b79c3abd89a3
     PATCH_COMMAND ${EXEC} git am --3way ${CMAKE_CURRENT_SOURCE_DIR}/curl-*.patch
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${EXEC} ${CMAKE_COMMAND} -H<SOURCE_DIR> -B<BINARY_DIR>
