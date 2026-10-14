@@ -108,13 +108,18 @@ jobs:
           7z a -m0=lzma2 -mx=9 -ms=on release_$BIT/ffmpeg-${{ env.arch }}-git-$hash.7z ./build_$BIT/$BIT-w64-mingw32/bin/ffmpeg.exe
 
       - name: Checking the build is not GPL
+        # FFmpeg 和 mpv 自己在 configure 时给出的结论。不从 mpv.exe 里找 FFmpeg 的配置串：
+        # LTO 会把没人调用的 avcodec_configuration() 连同配置串一起裁掉。
         run: |
-          7z x -y -o"check_$BIT" release_$BIT/mpv-${{ env.arch }}-*.7z > /dev/null
-          config=$(grep -a -o -m1 -e '--cross-prefix=[[:print:]]*' check_$BIT/mpv.exe | head -1 || true)
-          echo "ffmpeg configuration: $config"
-          echo "$config" | grep -q -e '--enable-gpl' && { echo '::error::FFmpeg was configured with --enable-gpl'; exit 1; }
-          echo "$config" | grep -q -e '--enable-version3' || { echo '::error::FFmpeg was configured without --enable-version3'; exit 1; }
-          rm -rf check_$BIT
+          ffmpeg_log=$(find build_$BIT/packages -name ffmpeg-configure-out.log | head -1)
+          mpv_log=$(find build_$BIT/packages -name mpv-configure-out.log | head -1)
+          [[ -f "$ffmpeg_log" && -f "$mpv_log" ]] || { echo '::error::configure logs of ffmpeg / mpv not found'; exit 1; }
+          license=$(grep -m1 '^License:' "$ffmpeg_log" || true)
+          gpl=$(grep -m1 -E '^[[:space:]]+gpl[[:space:]]+:' "$mpv_log" || true)
+          echo "FFmpeg: $license"
+          echo "mpv:$gpl"
+          [[ "$license" == "License: LGPL version 3 or later" ]] || { echo "::error::unexpected FFmpeg license: $license"; exit 1; }
+          [[ "$gpl" =~ :[[:space:]]*false$ ]] || { echo '::error::mpv was not configured with -Dgpl=false'; exit 1; }
 
       - name: Collecting logs
         if: always()
