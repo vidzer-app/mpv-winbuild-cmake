@@ -8,6 +8,8 @@ This fork of [shinchiro/mpv-winbuild-cmake](https://github.com/shinchiro/mpv-win
 - `packages/mpv.cmake`: mpv pinned to master `35efcf53d5` (2026-11-23), which has the gpu-next backend of the render API (`MPV_RENDER_PARAM_RENDERER`); the same commit as the macOS build in vidzer-app/libmpv-darwin-build. Move to 0.43 once it is released.
 - `.github/workflows`: only the x86_64 clang toolchain and build; releases are tagged `lgpl-YYYYMMDD` and contain `mpv-dev-x86_64-*.7z` (libmpv + headers), `mpv-x86_64-*.7z` (player, for verification) and `ffmpeg-x86_64-*.7z`.
 
+Releases are built locally with `vidzer/build-local.sh` (the GitHub Actions cache is evicted after a week, so the CI usually starts cold); see [vidzer/README.md](vidzer/README.md).
+
 The sources of every library are fetched by the build scripts from their upstream repositories; the exact revisions are in the build logs attached to each workflow run. Verify a build with `mpv --version`: the FFmpeg configuration must not contain `--enable-gpl`, and the mpv feature list must not contain `gpl`.
 
 ---
